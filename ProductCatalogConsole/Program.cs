@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using ProductCatalogConsole.Interactions;
 using ProductCatalogConsole.Menus;
 using Resources.Services;
 
@@ -22,9 +23,10 @@ class Program
         var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         var filePath = Path.Combine(baseDirectory, "products.json");
 
-        service.AddSingleton<IProductService>();
+        service.AddSingleton<IProductService, ProductService>();
         service.AddSingleton<IFileService>(new FileService(filePath));
 
         service.AddSingleton<MainMenuService>();
+        service.AddSingleton<ProductInteraction>();
     }
 }

@@ -7,16 +7,43 @@ namespace Resources.Services;
 public class ProductService : IProductService
 {
     private readonly IFileService _fileService;
-    private List<Product> _products = [];
+    private Catalog _catalog;
 
     public ProductService(IFileService fileService)
     {
         _fileService = fileService;
+        _catalog = GetCatalogFromFile() ?? new Catalog();
+    }
+
+    private Catalog GetCatalogFromFile()
+    {
+        try
+        {
+            var content = _fileService.GetFromFile();
+            if (!string.IsNullOrEmpty(content))
+            {
+                var catalog = JsonConvert.DeserializeObject<Catalog>(content);
+                return catalog ?? new Catalog();  // Se till att returnera en ny Catalog om deserialiseringen misslyckas
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading catalog from file: {ex.Message}");
+            // Loggning kan vara bra här
+        }
+
+        return new Catalog();  // Returnera alltid en ny tom Catalog om något går fel
+    }
+
+    private void SaveCatalogToFile()
+    {
+        var content = JsonConvert.SerializeObject(_catalog, Formatting.Indented);
+        _fileService.SaveToFile(content);
     }
 
     public StatusCodes SaveProduct(Product product)
     {
-        if (_products.Any(p => p.ProductName == product.ProductName))
+        if (_catalog.Products.Any(p => p.ProductName == product.ProductName))
         {
             return StatusCodes.Exists;
         }
@@ -24,9 +51,30 @@ public class ProductService : IProductService
         {
             try
             {
-                _products.Add(product);
-                var result = SaveProduct();
-                return result;
+                _catalog.Products.Add(product);
+                SaveCatalogToFile();
+                return StatusCodes.Success;
+            }
+            catch (Exception ex)
+            {
+                return StatusCodes.Failed;
+            }
+        }
+    }
+
+    public StatusCodes SaveCategory(Category category)
+    {
+        if (_catalog.Categories.Any(c => c.CategoryName == category.CategoryName))
+        {
+            return StatusCodes.Exists;
+        }
+        else
+        {
+            try
+            {
+                _catalog.Categories.Add(category);
+                SaveCatalogToFile();
+                return StatusCodes.Success;
             }
             catch (Exception ex)
             {
@@ -37,7 +85,7 @@ public class ProductService : IProductService
 
     public StatusCodes UpdateProduct(Product product)
     {
-        var existingProduct = _products.FirstOrDefault(p => p.Id == product.Id);
+        var existingProduct = _catalog.Products.FirstOrDefault(p => p.Id == product.Id);
         if (existingProduct == null)
         {
             return StatusCodes.NotFound;
@@ -46,9 +94,10 @@ public class ProductService : IProductService
         {
             try
             {
-                existingProduct = product;
-                var result = SaveProduct();
-                return result;
+                var index = _catalog.Products.IndexOf(existingProduct);
+                _catalog.Products[index] = product;
+                SaveCatalogToFile();
+                return StatusCodes.Success;
             }
             catch (Exception ex)
             {
@@ -61,38 +110,38 @@ public class ProductService : IProductService
     {
         try
         {
-            var content = _fileService.GetFromFile();
-
-            if (!string.IsNullOrEmpty(content))
+            GetCatalogFromFile();
+            if (_catalog.Products == null)
             {
-                var tempProducts = JsonConvert.DeserializeObject<List<Product>>(content);
-                if (tempProducts != null && tempProducts.Count > 0)
-                {
-                    _products = tempProducts;
-                }
+                return null!;
             }
+
+            return _catalog.Products;
         }
         catch (Exception ex) { }
-
-        return _products;
+        return null!;
     }
 
-    public StatusCodes Delete(string id)
+    public IEnumerable<Category> GetAllCategories()
+    {
+        return _catalog.Categories;
+    }
+
+    public StatusCodes DeleteProduct(string id)
     {
         try
         {
-            _products = GetAllProducts().ToList();
 
-            var product = _products.FirstOrDefault(p => p.Id == id);
+            var product = _catalog.Products.FirstOrDefault(p => p.Id == id);
             if (product == null)
             {
                 return StatusCodes.NotFound;
             }
             else
             {
-                _products.Remove(product);
-                var result = SaveProduct();
-                return result;
+                _catalog.Products.Remove(product);
+                SaveCatalogToFile();
+                return StatusCodes.Success;
             }
         }
         catch
@@ -101,8 +150,8 @@ public class ProductService : IProductService
         }
     }
 
-    private StatusCodes SaveProduct()
+    public StatusCodes Delete(string id)
     {
-        return _fileService.SaveToFile(JsonConvert.SerializeObject(_products, Formatting.Indented));
+        throw new NotImplementedException();
     }
 }

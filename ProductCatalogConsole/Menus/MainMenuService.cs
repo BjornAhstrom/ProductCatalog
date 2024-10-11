@@ -1,12 +1,16 @@
-﻿namespace ProductCatalogConsole.Menus;
+﻿using ProductCatalogConsole.Interactions;
+
+namespace ProductCatalogConsole.Menus;
 
 public class MainMenuService
 {
-    //private static readonly string _productsFile = Path.Combine(AppContext.BaseDirectory, "Products.json");
-    //private static readonly string _categoriesFile = Path.Combine(AppContext.BaseDirectory, "Categories.json");
+    private readonly ProductInteraction _productInteraction;
 
-    //private static ProductInteraction _productInteraction = new ProductInteraction(_productsFile, _categoriesFile);
-    //private static CategoryMenu _categoryMenu = new CategoryMenu(_categoriesFile);
+    public MainMenuService(ProductInteraction productInteraction)
+    {
+        _productInteraction = productInteraction;
+    }
+
     public void StartMenu()
     {
         while (true)
@@ -28,19 +32,19 @@ public class MainMenuService
                     Environment.Exit(0);
                     break;
                 case 1:
-                    //_productInteraction.ListAllProducts();
+                    _productInteraction.ListAllProducts();
                     break;
                 case 2:
-                    //_productInteraction.CreateProductInteraction();
+                    _productInteraction.CreateProduct();
                     break;
                 case 3:
                     //_productInteraction.ChangeProductInfo();
                     break;
                 case 4:
-                    //_productInteraction.DeleteProduct();
+                    _productInteraction.CreateCategory();
                     break;
                 case 5:
-                    //_categoryMenu.DisplayCategoryMenu();
+                    _productInteraction.ListAllCategories();    
                     break;
                 default:
                     Console.WriteLine("\n\tMenyalternativet finns inte.");
