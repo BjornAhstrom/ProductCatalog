@@ -30,6 +30,7 @@ public class ProductService : IProductService
         catch (Exception ex)
         {
             Console.WriteLine($"Error loading catalog from file: {ex.Message}");
+
         }
 
         return new Catalog();
@@ -86,6 +87,7 @@ public class ProductService : IProductService
     public StatusCodes UpdateProduct(Product product)
     {
         var existingProduct = _catalog.Products.FirstOrDefault(p => p.Id == product.Id);
+
         if (existingProduct == null)
         {
             return StatusCodes.NotFound;
@@ -104,6 +106,19 @@ public class ProductService : IProductService
                 return StatusCodes.Failed;
             }
         }
+    }
+
+    public Product GetProduct(string id)
+    {
+        GetAllProducts();
+
+        try
+        {
+            Product product = _catalog.Products.FirstOrDefault(p => p.Id == id)!;
+            return product;
+        }
+        catch { }
+        return null!;
     }
 
     public IEnumerable<Product> GetAllProducts()
@@ -148,10 +163,5 @@ public class ProductService : IProductService
         {
             return StatusCodes.Failed;
         }
-    }
-
-    public StatusCodes Delete(string id)
-    {
-        throw new NotImplementedException();
     }
 }

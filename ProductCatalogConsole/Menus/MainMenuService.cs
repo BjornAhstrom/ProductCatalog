@@ -5,10 +5,12 @@ namespace ProductCatalogConsole.Menus;
 public class MainMenuService
 {
     private readonly ProductInteraction _productInteraction;
+    private readonly CategoryMenu _categoryMenu;
 
-    public MainMenuService(ProductInteraction productInteraction)
+    public MainMenuService(ProductInteraction productInteraction, CategoryMenu categoryMenu)
     {
         _productInteraction = productInteraction;
+        _categoryMenu = categoryMenu;
     }
 
     public void StartMenu()
@@ -38,13 +40,13 @@ public class MainMenuService
                     _productInteraction.CreateProduct();
                     break;
                 case 3:
-                    //_productInteraction.ChangeProductInfo();
+                    _productInteraction.ChangeProductInfo();
                     break;
                 case 4:
-                    _productInteraction.CreateCategory();
+                    _productInteraction.DeleteProduct();
                     break;
                 case 5:
-                    _productInteraction.ListAllCategories();    
+                    _categoryMenu.DisplayCategoryMenu();    
                     break;
                 default:
                     Console.WriteLine("\n\tMenyalternativet finns inte.");
@@ -54,3 +56,5 @@ public class MainMenuService
         }
     }
 }
+
+

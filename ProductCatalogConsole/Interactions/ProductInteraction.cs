@@ -7,11 +7,12 @@ public class ProductInteraction
 {
     private readonly IProductService _productService;
     private List<Product> _products = [];
-    private List<Category> _categories = []; 
+    private List<Category> _categories = [];
 
     public ProductInteraction(IProductService productService)
     {
         _productService = productService;
+        GetAllCategories();
     }
 
     public void ListAllCategories()
@@ -29,7 +30,6 @@ public class ProductInteraction
             Console.WriteLine("\n\tDet finns inga kategorier.");
         }
         Console.ReadKey();
-
     }
 
     public void CreateCategory()
@@ -69,6 +69,7 @@ public class ProductInteraction
         CheckIfProductExists(product);
         SetDescriptonOnProduct(product);
         SetPriceOnProduct(product);
+        AddCategoryToProduct(product);
         SaveProduct(product);
     }
 
@@ -123,10 +124,6 @@ public class ProductInteraction
     {
         Console.Write("\n\tAnge en beskrivning: ");
         product.ProductDescription = Console.ReadLine() ?? "";
-
-        Console.Write("\n\tAnge en kategori: ");
-        
-        product.ProductCategory.CategoryName = Console.ReadLine() ?? "";
     }
 
     private void SaveProduct(Product product)
@@ -150,156 +147,151 @@ public class ProductInteraction
     }
 
 
-    //public void AddCategoryToProduct(Product product)
-    //{
-    //    Console.WriteLine("\n\t\tVälj en kategori\n\t------------------------------------");
+    public void AddCategoryToProduct(Product product)
+    {
+        GetAllCategories();
+        Console.WriteLine("\n\t\tVälj en kategori\n\t------------------------------------");
 
-    //    if (_categories != null && _categories.Count != 0)
-    //    {
-    //        Console.ReadKey();
-    //        for (int i = 0; i < _categories.Count; i++)
-    //        {
-    //            Console.WriteLine($"\n\t[{i + 1}]\n\tKategori: {_categories[i].CategoryName}");
-    //        }
+        if (_categories != null && _categories.Count != 0)
+        {
+            for (int i = 0; i < _categories.Count; i++)
+            {
+                Console.WriteLine($"\n\t[{i + 1}]\n\tKategori: {_categories[i].CategoryName}");
+            }
 
-    //        while (true)
-    //        {
-    //            Console.Write($"\n\tAnge platsnummer för att välja kategori: ");
+            while (true)
+            {
+                Console.Write($"\n\tAnge platsnummer för att välja kategori: ");
 
-    //            if (int.TryParse(Console.ReadLine(), out int option) && option >= 1 && option <= _categories.Count)
-    //            {
-    //                product.Category = _categories[option - 1];
-    //                break;
-    //            }
-    //            else
-    //            {
-    //                Console.WriteLine("\n\tOgiltigt platsnummer");
-    //            }
-    //        }
-    //    }
-    //}
+                if (int.TryParse(Console.ReadLine(), out int option) && option >= 1 && option <= _categories.Count)
+                {
+                    product.ProductCategory = _categories[option - 1];
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("\n\tOgiltigt platsnummer");
+                }
+            }
+        }
+    }
 
     //// Tog hjälp av ChatGpt för att kunna antingen ändra namn eller pris, eller välja att behålla namnet eller priset som redan finns på en produkt
-    //public void ChangeProductInfo()
-    //{
-    //    GetProductsFromFile();
-    //    Product product = new Product();
-    //    Console.Clear();
-    //    Console.WriteLine("\n\t\tUppdatera en produkt\n\t------------------------------------");
+    public void ChangeProductInfo()
+    {
+        GetProductsFromFile();
+        Product product = new Product();
+        Console.Clear();
+        Console.WriteLine("\n\t\tUppdatera en produkt\n\t------------------------------------");
 
-    //    for (int i = 0; i < _products.Count; ++i)
-    //    {
-    //        Console.WriteLine($"\n\t[{i + 1}]\n\tProdukt id: {_products[i].Id}\n\tProdukt: {_products[i].ProductName}\n\tPris: {_products[i].ProductPrice}\n\tKategori: {_products[i].Category.CategoryName}");
-    //    }
+        for (int i = 0; i < _products.Count; ++i)
+        {
+            Console.WriteLine($"\n\t[{i + 1}]\n\tProdukt id: {_products[i].Id}\n\tProdukt: {_products[i].ProductName}\n\tPris: {_products[i].ProductPrice}\n\tKategori: {_products[i].ProductCategory.CategoryName}");
+        }
 
-    //    Console.Write("\n\tAnge platsnummer för den produkt du vill uppdatera: ");
+        Console.Write("\n\tAnge platsnummer för den produkt du vill uppdatera: ");
 
-    //    if (int.TryParse(Console.ReadLine(), out int option) && option >= 1 && option <= _products.Count)
-    //    {
-    //        product = _productService.GetProduct(_products[option - 1].Id).Result!;
-    //        string defaultName = product.ProductName;
-    //        decimal defaultPrice = product.ProductPrice;
+        if (int.TryParse(Console.ReadLine(), out int option) && option >= 1 && option <= _products.Count)
+        {
+            product = _productService.GetProduct(_products[option - 1].Id);
+            string defaultName = product.ProductName;
+            decimal defaultPrice = product.ProductPrice;
 
-    //        Console.WriteLine($"\n\t{product.Id}");
+            Console.WriteLine($"\n\t{product.Id}");
 
-    //        Console.WriteLine("\n\t\tÄndra namn\n\t-------------------------");
-    //        Console.Write($"\n\tNuvarande namn är {product.ProductName}. Ändra eller tryck enter för att behålla: ");
-    //        string inputName = Console.ReadLine() ?? "";
-    //        product.ProductName = string.IsNullOrWhiteSpace(inputName) ? defaultName : inputName;
+            Console.WriteLine("\n\t\tÄndra namn\n\t-------------------------");
+            Console.Write($"\n\tNuvarande namn är {product.ProductName}. Ändra eller tryck enter för att behålla: ");
+            string inputName = Console.ReadLine() ?? "";
+            product.ProductName = string.IsNullOrWhiteSpace(inputName) ? defaultName : inputName;
 
-    //        Console.WriteLine("\n\t\tÄndra pris\n\t-------------------------");
-    //        Console.Write($"\n\tNuvarande pris är {product.ProductPrice}. Ändra eller tryck enter för att behålla: ");
+            Console.WriteLine("\n\t\tÄndra pris\n\t-------------------------");
+            Console.Write($"\n\tNuvarande pris är {product.ProductPrice}. Ändra eller tryck enter för att behålla: ");
 
-    //        ChangePriceOnProduct(product, defaultPrice);
+            ChangePriceOnProduct(product, defaultPrice);
 
-    //        var result = _productService.UpdateProduct(product);
+            var result = _productService.UpdateProduct(product);
 
-    //        if (result.Succeeded)
-    //        {
-    //            Console.WriteLine("\n\tProdukten har uppdaterats.");
-    //        }
-    //        else
-    //        {
-    //            Console.WriteLine($"\n\tKunde inte uppdatera produkten: {result.Message}");
-    //        }
-    //    }
-    //    Console.ReadKey();
-    //}
+            if (result == Resources.Enums.StatusCodes.Success)
+            {
+                Console.WriteLine("\n\tProdukten har uppdaterats.");
+            }
+            else
+            {
+                Console.WriteLine($"\n\tKunde inte uppdatera produkten.");
+            }
+        }
+        Console.ReadKey();
+    }
 
-    //private void ChangePriceOnProduct(Product product, decimal defaultPrice)
-    //{
-    //    while (true)
-    //    {
-    //        string inputPrice = Console.ReadLine() ?? "";
+    private void ChangePriceOnProduct(Product product, decimal defaultPrice)
+    {
+        while (true)
+        {
+            string inputPrice = Console.ReadLine() ?? "";
 
-    //        if (string.IsNullOrWhiteSpace(inputPrice))
-    //        {
-    //            product.ProductPrice = defaultPrice;
-    //            break;
-    //        }
-    //        else if (decimal.TryParse(inputPrice, out decimal price))
-    //        {
-    //            product.ProductPrice = price;
-    //            break;
-    //        }
-    //        else
-    //        {
-    //            Console.Write("\n\tFel: Ange ett giltigt pris i siffror.\n\tFörsök igen eller tryck enter för att behålla nuvarande pris: ");
-    //        }
-    //    }
-    //}
+            if (string.IsNullOrWhiteSpace(inputPrice))
+            {
+                product.ProductPrice = defaultPrice;
+                break;
+            }
+            else if (decimal.TryParse(inputPrice, out decimal price))
+            {
+                product.ProductPrice = price;
+                break;
+            }
+            else
+            {
+                Console.Write("\n\tFel: Ange ett giltigt pris i siffror.\n\tFörsök igen eller tryck enter för att behålla nuvarande pris: ");
+            }
+        }
+    }
 
-    //public void DeleteProduct()
-    //{
-    //    GetProductsFromFile();
-    //    Console.Clear();
-    //    Console.WriteLine("\n\t\tTa bort en produkt\n\t------------------------------------");
+    public void DeleteProduct()
+    {
+        GetProductsFromFile();
+        Console.Clear();
+        Console.WriteLine("\n\t\tTa bort en produkt\n\t------------------------------------");
 
-    //    for (int i = 0; i < _products.Count; ++i)
-    //    {
-    //        Console.WriteLine($"\n\t[{i + 1}]\n\tProdukt id: {_products[i].Id}\n\tProdukt: {_products[i].ProductName}\n\tPris: {_products[i].ProductPrice}\n\tKategori: {_products[i].Category.CategoryName}");
-    //    }
+        for (int i = 0; i < _products.Count; ++i)
+        {
+            Console.WriteLine($"\n\t[{i + 1}]\n\tProdukt id: {_products[i].Id}\n\tProdukt: {_products[i].ProductName}\n\tPris: {_products[i].ProductPrice}\n\tKategori: {_products[i].ProductCategory.CategoryName}");
+        }
 
-    //    Console.Write("\n\tAnge platsnummer för att ta bort en produkt: ");
+        Console.Write("\n\tAnge platsnummer för att ta bort en produkt: ");
 
-    //    if (int.TryParse(Console.ReadLine(), out int option) && option >= 1 && option <= _products.Count)
-    //    {
-    //        var result = _productService.DeleteProduct(_products[option - 1].Id);
+        if (int.TryParse(Console.ReadLine(), out int option) && option >= 1 && option <= _products.Count)
+        {
+            var result = _productService.DeleteProduct(_products[option - 1].Id);
 
-    //        if (result.Succeeded)
-    //        {
-    //            Console.WriteLine($"\n\tProdukt {_products[option - 1].ProductName} är borttaget.");
-    //        }
-    //        else
-    //        {
-    //            Console.WriteLine($"Bortagningen av produkten {_products[option - 1].ProductName} misslyckades.");
-    //        }
-    //    }
-    //    Console.ReadKey();
-    //}
+            if (result == Resources.Enums.StatusCodes.Success)
+            {
+                Console.WriteLine($"\n\tProdukt {_products[option - 1].ProductName} är borttaget.");
+            }
+            else
+            {
+                Console.WriteLine($"Bortagningen av produkten {_products[option - 1].ProductName} misslyckades.");
+            }
+        }
+        Console.ReadKey();
+    }
 
-    ////private void CheckIfCategoriesExists()
-    ////{
+    private void CheckIfCategoriesExists()
+    {
 
-    ////    if (_categories.Count == 0)
-    ////    {
-    ////        Console.Clear();
-    ////        Console.WriteLine("\n\tDet finns inga kategorier!\n\tDu måste lägga till en kategori innan du kan skapa en produkt.");
-    ////        Console.ReadKey();
+        if (_categories.Count! > 0)
+        {
+            Console.Clear();
+            Console.WriteLine("\n\tDet finns inga kategorier!\n\tDu måste lägga till en kategori innan du kan skapa en produkt.");
+            Console.ReadKey();
 
-    ////        _categoryInteraction.CreatCatergory();
-    ////    }
-    ////}
+            // _categoryInteraction.CreatCatergory();
+        }
+    }
 
-
-
-
-
-
-    //private void GetAllCategories()
-    //{
-    //    _categories = _categoryService.GetAllCategories().Result!.ToList();
-    //}
+    private void GetAllCategories()
+    {
+        _categories = _productService.GetAllCategories().ToList();
+    }
 
     private void GetCategoriesFromFile()
     {
@@ -331,7 +323,4 @@ public class ProductInteraction
             Console.WriteLine($"ERROR: {ex.Message}");
         }
     }
-
 }
-
-

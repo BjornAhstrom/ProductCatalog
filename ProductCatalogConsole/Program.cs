@@ -28,5 +28,8 @@ class Program
 
         service.AddSingleton<MainMenuService>();
         service.AddSingleton<ProductInteraction>();
+
+        service.AddSingleton<CategoryMenu>();
+        service.AddSingleton<CategoryInteraction>();
     }
 }
