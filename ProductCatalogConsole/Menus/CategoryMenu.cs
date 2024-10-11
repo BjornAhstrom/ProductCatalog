@@ -28,10 +28,10 @@ public class CategoryMenu
                 case 0:
                     return;
                 case 1:
-                    //_categoryInteraction.GetAllCategories();
+                    _categoryInteraction.ListAllCategories();
                     break;
                 case 2:
-                    //_categoryInteraction.CreatCatergory();
+                    _categoryInteraction.CreateCategory();
                     break;
                 default:
                     Console.WriteLine("\n\tMenyalternativet finns inte");
