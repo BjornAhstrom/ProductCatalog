@@ -15,6 +15,7 @@ public class ProductService : IProductService
         _catalog = GetCatalogFromFile() ?? new Catalog();
     }
 
+    // Took some help from ChatGpt to save and get products and categories from same json file 
     private Catalog GetCatalogFromFile()
     {
         try
@@ -23,16 +24,15 @@ public class ProductService : IProductService
             if (!string.IsNullOrEmpty(content))
             {
                 var catalog = JsonConvert.DeserializeObject<Catalog>(content);
-                return catalog ?? new Catalog();  // Se till att returnera en ny Catalog om deserialiseringen misslyckas
+                return catalog ?? new Catalog();
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error loading catalog from file: {ex.Message}");
-            // Loggning kan vara bra här
         }
 
-        return new Catalog();  // Returnera alltid en ny tom Catalog om något går fel
+        return new Catalog(); 
     }
 
     private void SaveCatalogToFile()
