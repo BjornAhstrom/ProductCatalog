@@ -9,7 +9,7 @@ public class ProductInteraction
     private List<Product> _products = [];
     private List<Category> _categories = [];
 
-    public ProductInteraction(IProductService productService)
+    public ProductInteraction(IProductService productService, CategoryInteraction categoryInteraction)
     {
         _productService = productService;
         GetAllCategories();
@@ -248,17 +248,37 @@ public class ProductInteraction
         Console.ReadKey();
     }
 
-    private void CheckIfCategoriesExists()
+    public void ExitProgram()
+    {
+        Console.Write("\n\tÄr du säker på att du vill avsluta? (y/n)\n\t");
+        string answer = Console.ReadLine() ?? "";
+
+        if (answer.ToLower() == "y")
+        {
+            Console.WriteLine("\n\tHej då!");
+            Environment.Exit(0);
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    public void CheckIfCategoriesExistsBeforeCreatingProduct()
     {
 
-        if (_categories.Count! > 0)
+        if (_categories.Count == 0)
         {
             Console.Clear();
             Console.WriteLine("\n\tDet finns inga kategorier!\n\tDu måste lägga till en kategori innan du kan skapa en produkt.");
             Console.ReadKey();
-
-            // _categoryInteraction.CreatCatergory();
+            return;
         }
+        else
+        {
+            CreateProduct();
+        }
+
     }
 
     private void GetAllCategories()

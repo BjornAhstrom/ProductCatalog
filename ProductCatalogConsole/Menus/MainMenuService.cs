@@ -31,13 +31,13 @@ public class MainMenuService
             switch (option)
             {
                 case 0:
-                    Environment.Exit(0);
+                    _productInteraction.ExitProgram();  
                     break;
                 case 1:
                     _productInteraction.ListAllProducts();
                     break;
                 case 2:
-                    _productInteraction.CreateProduct();
+                    _productInteraction.CheckIfCategoriesExistsBeforeCreatingProduct();
                     break;
                 case 3:
                     _productInteraction.ChangeProductInfo();
