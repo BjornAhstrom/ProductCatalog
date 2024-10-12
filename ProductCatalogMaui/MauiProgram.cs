@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using ProductCatalogMaui.Pages;
+using ProductCatalogMaui.ViewModels;
 
 namespace ProductCatalogMaui
 {
@@ -18,6 +20,12 @@ namespace ProductCatalogMaui
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+            builder.Services.AddSingleton<MainPage>();
+            builder.Services.AddSingleton<MainPageViewModel>();
+
+            builder.Services.AddSingleton<StartPage>();
+            builder.Services.AddSingleton<StartPageViewModel>();
+
 
             return builder.Build();
         }
