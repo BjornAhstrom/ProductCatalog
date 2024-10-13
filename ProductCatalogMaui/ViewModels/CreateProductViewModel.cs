@@ -1,5 +1,5 @@
 ﻿namespace ProductCatalogMaui.ViewModels;
 
-public class StartPageViewModel
+public class CreateProductViewModel
 {
 }

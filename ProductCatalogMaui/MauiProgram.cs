@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using ProductCatalogMaui.Pages;
 using ProductCatalogMaui.ViewModels;
+using Resources.Services;
 
 namespace ProductCatalogMaui
 {
@@ -20,12 +21,17 @@ namespace ProductCatalogMaui
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var filePath = Path.Combine(baseDirectory, "products.json");
+
+            builder.Services.AddSingleton<IProductService, ProductService>();
+            builder.Services.AddSingleton<IFileService>(new FileService(filePath));
+
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<MainPageViewModel>();
 
-            builder.Services.AddSingleton<StartPage>();
-            builder.Services.AddSingleton<StartPageViewModel>();
-
+            builder.Services.AddSingleton<CreateProductPage>();
+            builder.Services.AddSingleton<CreateProductViewModel>();
 
             return builder.Build();
         }
