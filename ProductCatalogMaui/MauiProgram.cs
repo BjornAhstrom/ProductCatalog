@@ -30,8 +30,8 @@ namespace ProductCatalogMaui
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<MainPageViewModel>();
 
-            builder.Services.AddSingleton<CreateProductPage>();
-            builder.Services.AddSingleton<CreateProductViewModel>();
+            builder.Services.AddTransient<CreateProductPage>();
+            builder.Services.AddTransient<CreateProductViewModel>();
 
             return builder.Build();
         }

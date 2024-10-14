@@ -7,14 +7,14 @@
              x:Class="ProductCatalogMaui.Pages.MainPage"
              >
 
-    <ScrollView>
+    <ScrollView >
         <Grid RowDefinitions="auto, *" Margin="15">
             <Grid Grid.Row="0" ColumnDefinitions="*, *">
-                <Button Grid.Column="0" Text="Create Product" HorizontalOptions="Start" />
+                <Button Grid.Column="0" Text="Create Product" HorizontalOptions="Start" Command="{Binding CreateProductCommand}"/>
                 <Button Grid.Column="1" Text="Create Category" HorizontalOptions="End" />
             </Grid>
 
-            <ListView ItemsSource="{Binding Products}">
+            <ListView Grid.Row="1" ItemsSource="{Binding Products}">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="{x:Type models:Product}">
                         <ViewCell>

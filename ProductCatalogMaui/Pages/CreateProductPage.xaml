@@ -1,12 +1,48 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:ProductCatalogMaui.ViewModels"
+             xmlns:models="clr-namespace:Resources.Models;assembly=Resources"
+             x:DataType="viewmodels:CreateProductViewModel"
              x:Class="ProductCatalogMaui.Pages.CreateProductPage"
-             Title="CreateProductPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             >
+
+    <ScrollView Margin="15">
+        <Grid RowDefinitions="auto, auto, *">
+            <Grid Grid.Row="0" ColumnDefinitions="1*, 1*">
+                <VerticalStackLayout Grid.Column="0" Spacing="10">
+                    <Label Text="Produktnamn"/>
+                    <Entry Text="{Binding Product.ProductName}"/>
+                    <Label Text="Produktbeskrivning"/>
+                    <Entry Text="{Binding Product.ProductDescription}"/>
+                    <Label Text="Produktpris"/>
+                    <Entry Text="{Binding Product.ProductPrice}"/>
+                </VerticalStackLayout>
+
+                <Grid Grid.Column="1" Margin="20">
+                    <StackLayout >
+                        <Picker Title="Select category" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory }" />
+                    </StackLayout>
+                </Grid>
+            </Grid>
+            
+            <ListView Grid.Row="1" ItemsSource="{Binding Categories}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="{x:Type models:Category}">
+                        <ViewCell>
+                            <Label Text="{Binding CategoryName}"/>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Grid Grid.Row="2" ColumnDefinitions="1*, 1*" VerticalOptions="End" Margin="0,10,0,20">
+                <VerticalStackLayout Grid.Column="0" Margin="30,0" Spacing="10">
+                    <Button Text="Spara" Command="{Binding SaveProductCommand}"/>
+                    <Button Text="Avbryt" Command="{Binding CancelCommand}"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Grid>
+    </ScrollView>
+    
 </ContentPage>
