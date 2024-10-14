@@ -12,6 +12,7 @@ public partial class MainPage : ContentPage
 		_viewModel = viewModel;
 	}
 
+	// Took help from ChatGpt to update the ListView 
     protected override void OnAppearing()
     {
         base.OnAppearing();

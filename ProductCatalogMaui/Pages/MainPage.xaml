@@ -8,26 +8,31 @@
              >
 
     <ScrollView >
-        <Grid RowDefinitions="auto, *" Margin="15">
+        <Grid RowDefinitions="auto ,auto, *" Margin="15">
             <Grid Grid.Row="0" ColumnDefinitions="*, *">
                 <Button Grid.Column="0" Text="Create Product" HorizontalOptions="Start" Command="{Binding CreateProductCommand}"/>
                 <Button Grid.Column="1" Text="Create Category" HorizontalOptions="End" />
             </Grid>
+            <Grid Grid.Row="1" ColumnDefinitions="2*, 1*, 1*, 1*" Margin="0,30,0,0">
+                <Label Grid.Column="0" Text="Id"/>
+                <Label Grid.Column="1" Text="Produkt"/>
+                <Label Grid.Column="2" Text="Pris"/>
+                <Label Grid.Column="3" Text="Kategori"/>
+            </Grid>
+            <BoxView Grid.Row="1" HeightRequest="1" VerticalOptions="End"/>
 
-            <ListView Grid.Row="1" ItemsSource="{Binding Products}">
-                <ListView.ItemTemplate>
+            <CollectionView Grid.Row="2" ItemsSource="{Binding Products}" Margin="0,15,0,0">
+                <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="{x:Type models:Product}">
-                        <ViewCell>
-                            <Grid ColumnDefinitions="auto, *, *, *">
-                                <Label Grid.Column="0" Text="{Binding Id}"/>
-                                <Label Grid.Column="1" Text="{Binding ProductName}"/>
-                                <Label Grid.Column="2" Text="{Binding ProductPrice}"/>
-                                <Label Grid.Column="3" Text="{Binding ProductCategory.CategoryName}"/>
-                            </Grid>
-                        </ViewCell>
+                        <Grid ColumnDefinitions="2*, 1*, 1*, 1*">
+                            <Label Grid.Column="0" Text="{Binding Id}" FontSize="16" Margin="0,0,20,0"/>
+                            <Label Grid.Column="1" Text="{Binding ProductName}" FontSize="16" Margin="0,5"/>
+                            <Label Grid.Column="2" Text="{Binding ProductPrice}" FontSize="16"/>
+                            <Label Grid.Column="3" Text="{Binding ProductCategory.CategoryName}" FontSize="16"/>
+                        </Grid>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
             
         </Grid>
     </ScrollView>

@@ -17,9 +17,12 @@ public partial class MainPageViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<Product> _products = [];
 
+    // Took help from ChatGpt to update the ListView
+    public IRelayCommand LoadDataCommand { get; }
     public MainPageViewModel(IProductService productService)
     {
         _productService = productService;
+        // Took help from ChatGpt to update the ListView
         LoadDataCommand = new RelayCommand(GetAllProducts);
     }
 
@@ -35,7 +38,6 @@ public partial class MainPageViewModel : ObservableObject
         }
     }
 
-    public IRelayCommand LoadDataCommand { get; }
 
     [RelayCommand]
     public async Task CreateProduct()

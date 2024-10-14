@@ -15,8 +15,15 @@ public partial class CreateProductViewModel : ObservableObject
     private ObservableCollection<Category> _categories = [];
     [ObservableProperty]
     private Category _selectedCategory;
+
     [ObservableProperty]
-    private Product _product = new();
+    private string _name;
+    [ObservableProperty]
+    private string _description;
+    [ObservableProperty]
+    private decimal _price;
+
+
 
     public CreateProductViewModel(IProductService productService)
     {
@@ -31,16 +38,30 @@ public partial class CreateProductViewModel : ObservableObject
         foreach(var category in categories)
         {
             Categories.Add(category);
-            Debug.WriteLine(category);
         }
+    }
+
+    public string SelectedCategoryText => SelectedCategory == null ? "Välj en kategori" : SelectedCategory.CategoryName;
+
+    partial void OnSelectedCategoryChanged(Category value)
+    {
+        OnPropertyChanged(nameof(SelectedCategoryText));
     }
 
     [RelayCommand]
     public async Task SaveProduct()
     {
-       if (Product != null)
+        var product = new Product()
         {
-            _productService.SaveProduct(Product);
+            ProductName = Name,
+            ProductDescription = Description,
+            ProductPrice = Price,
+            ProductCategory = SelectedCategory,
+        };
+
+       if (product != null)
+        {
+            _productService.SaveProduct(product);
             await Shell.Current.GoToAsync("..");
         }
     }
