@@ -33,6 +33,9 @@ namespace ProductCatalogMaui
             builder.Services.AddTransient<CreateProductPage>();
             builder.Services.AddTransient<CreateProductViewModel>();
 
+            builder.Services.AddTransient<CreateCategoryPage>();
+            builder.Services.AddTransient<CreateCategryViewModel>();
+
             return builder.Build();
         }
     }

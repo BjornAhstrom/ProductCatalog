@@ -46,8 +46,8 @@ public partial class MainPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public void CreateCategory()
+    public async Task CreateCategory()
     {
-
+        await Shell.Current.GoToAsync(nameof(CreateCategoryPage));
     }
 }

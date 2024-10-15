@@ -9,6 +9,7 @@ namespace ProductCatalogMaui
             InitializeComponent();
 
             Routing.RegisterRoute(nameof(CreateProductPage), typeof(CreateProductPage));
+            Routing.RegisterRoute(nameof(CreateCategoryPage), typeof(CreateCategoryPage));
         }
     }
 }

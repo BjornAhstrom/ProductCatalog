@@ -59,7 +59,7 @@ public partial class CreateProductViewModel : ObservableObject
             ProductCategory = SelectedCategory,
         };
 
-       if (product != null)
+       if (!string.IsNullOrWhiteSpace(product.ProductName) && !string.IsNullOrWhiteSpace(product.ProductDescription) && !decimal.IsNegative(product.ProductPrice) && SelectedCategory != null)
         {
             _productService.SaveProduct(product);
             await Shell.Current.GoToAsync("..");

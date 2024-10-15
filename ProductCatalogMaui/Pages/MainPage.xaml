@@ -11,7 +11,7 @@
         <Grid RowDefinitions="auto ,auto, *" Margin="15">
             <Grid Grid.Row="0" ColumnDefinitions="*, *">
                 <Button Grid.Column="0" Text="Create Product" HorizontalOptions="Start" Command="{Binding CreateProductCommand}"/>
-                <Button Grid.Column="1" Text="Create Category" HorizontalOptions="End" />
+                <Button Grid.Column="1" Text="Create Category" HorizontalOptions="End" Command="{Binding CreateCategoryCommand}"/>
             </Grid>
             <Grid Grid.Row="1" ColumnDefinitions="2*, 1*, 1*, 1*" Margin="0,30,0,0">
                 <Label Grid.Column="0" Text="Id"/>
@@ -24,11 +24,11 @@
             <CollectionView Grid.Row="2" ItemsSource="{Binding Products}" Margin="0,15,0,0">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="{x:Type models:Product}">
-                        <Grid ColumnDefinitions="2*, 1*, 1*, 1*">
-                            <Label Grid.Column="0" Text="{Binding Id}" FontSize="16" Margin="0,0,20,0"/>
+                        <Grid ColumnDefinitions="1.5*, 1*, 1*, 1*">
+                            <Label Grid.Column="0" Text="{Binding Id}" FontSize="16" Margin="0,5,20,5"/>
                             <Label Grid.Column="1" Text="{Binding ProductName}" FontSize="16" Margin="0,5"/>
-                            <Label Grid.Column="2" Text="{Binding ProductPrice}" FontSize="16"/>
-                            <Label Grid.Column="3" Text="{Binding ProductCategory.CategoryName}" FontSize="16"/>
+                            <Label Grid.Column="2" Text="{Binding ProductPrice, StringFormat='{0} kr'}" FontSize="16" Margin="0,5"/>
+                            <Label Grid.Column="3" Text="{Binding ProductCategory.CategoryName}" FontSize="16" Margin="0,5"/>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
