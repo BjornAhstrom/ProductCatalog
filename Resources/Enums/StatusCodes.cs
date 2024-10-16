@@ -1,10 +1,9 @@
-﻿namespace Resources.Enums
+﻿namespace Resources.Enums;
+
+public enum StatusCodes
 {
-    public enum StatusCodes
-    {
-        Success,
-        Failed,
-        Exists,
-        NotFound
-    }
+    Success,
+    Failed,
+    Exists,
+    NotFound
 }

@@ -29,7 +29,17 @@ public partial class CreateProductViewModel : ObservableObject
     [ObservableProperty]
     private string _cancelOrBackBtnText;
     [ObservableProperty]
-    private bool _isVisible = true;
+    private bool _isLabelAndEntryVisible = true;
+    [ObservableProperty]
+    private bool _isCategoryVisible = true;
+    [ObservableProperty]
+    private bool _isDescriptionVisible = false;
+
+
+    [ObservableProperty]
+    private bool _saveChangedProduct = false;
+    [ObservableProperty]
+    private bool _changeProduct = true;
 
     private Product _currentProduct = null!;
 
@@ -40,14 +50,14 @@ public partial class CreateProductViewModel : ObservableObject
         GetAllCategories();
         SaveOrUpdateBtnText = "Spara";
         CancelOrBackBtnText = "Avbryt";
-        EditProduct();
+        DisplayProduct();
     }
 
     private void GetAllCategories()
     {
         var categories = _productService.GetAllCategories();
 
-        foreach(var category in categories)
+        foreach (var category in categories)
         {
             Categories.Add(category);
         }
@@ -60,15 +70,22 @@ public partial class CreateProductViewModel : ObservableObject
         OnPropertyChanged(nameof(SelectedCategoryText));
     }
 
-    public void EditProduct()
+    public void DisplayProduct()
     {
         try
         {
             if (IntermediateStorage.CurrentProduct != null)
             {
-                IsVisible = false;
-                SaveOrUpdateBtnText = "Uppdatera";
+                SaveChangedProduct = false;
+                IsLabelAndEntryVisible = false;
+                IsDescriptionVisible = true;
+                IsCategoryVisible = false;
+                ChangeProduct = false;
+
+                SaveOrUpdateBtnText = "Ändra produkten";
                 CancelOrBackBtnText = "Tillbaka";
+
+
                 var id = IntermediateStorage.CurrentProduct.Id;
 
                 if (!string.IsNullOrEmpty(id))
@@ -85,48 +102,97 @@ public partial class CreateProductViewModel : ObservableObject
         catch (Exception ex) { }
     }
 
-    [RelayCommand]
-    public async Task SaveProduct()
+    public void EditProduct()
+    {
+        Debug.WriteLine("INSIDE Edit product");
+
+        IsLabelAndEntryVisible = true;
+        IsDescriptionVisible = false;
+        IsCategoryVisible = false;
+        ChangeProduct = true;
+        SaveChangedProduct = true;
+
+        SaveOrUpdateBtnText = "Spara";
+        CancelOrBackBtnText = "Avbryt";
+    }
+
+    public void UpdateProduct()
     {
         try
         {
-            if (IsVisible)
-            {
-                var product = new Product()
-                {
-                    ProductName = Name,
-                    ProductDescription = Description,
-                    ProductPrice = Price,
-                    ProductCategory = SelectedCategory,
-                };
+            _currentProduct.ProductName = Name;
+            _currentProduct.ProductDescription = Description;
+            _currentProduct.ProductPrice = Price;
 
-                if (!string.IsNullOrWhiteSpace(product.ProductName) && !string.IsNullOrWhiteSpace(product.ProductDescription) && !decimal.IsNegative(product.ProductPrice) && SelectedCategory != null)
-                {
-                    _productService.SaveProduct(product);
-                    await Shell.Current.GoToAsync("..");
-                }
-            }
-            else
-            {
-                _currentProduct.ProductName = Name;
-                _currentProduct.ProductDescription = Description;
-                _currentProduct.ProductPrice = Price;
+            _productService.UpdateProduct(_currentProduct);
 
-                _productService.UpdateProduct(_currentProduct);
-                await Shell.Current.GoToAsync("..");
+            _ = GoBack();
+        }
+        catch { }
+    }
+
+    private void SaveNewProduct()
+    {
+        try
+        {
+            var product = new Product()
+            {
+                ProductName = Name,
+                ProductDescription = Description,
+                ProductPrice = Price,
+                ProductCategory = SelectedCategory,
+            };
+
+            if (!string.IsNullOrWhiteSpace(product.ProductName) && !string.IsNullOrWhiteSpace(product.ProductDescription) && !decimal.IsNegative(product.ProductPrice) && SelectedCategory != null)
+            {
+                _productService.SaveProduct(product);
+                _ = GoBack();
             }
         }
         catch { }
     }
 
     [RelayCommand]
+    public void SaveProduct()
+    {
+        if (ChangeProduct && !SaveChangedProduct)
+        {
+            SaveNewProduct();
+        }
+        else if (SaveChangedProduct)
+        {
+            UpdateProduct();
+        }
+        else
+        {
+            EditProduct();
+        }
+    }
+
+
+    [RelayCommand]
     public void Cancel()
     {
-        try
+        // If no changes go back
+        if (!ChangeProduct)
         {
-            Shell.Current.GoToAsync("..");
+            _ = GoBack();
         }
-        catch { }
+        // Undo edit and restore the product
+        else if (SaveChangedProduct)
+        {
+            DisplayProduct();
+        }
+        // Cancel when creating new product
+        else
+        {
+            _ = GoBack();
+        }
+    }
+
+    private async Task GoBack()
+    {
+        await Shell.Current.GoToAsync("..");
     }
 
 }

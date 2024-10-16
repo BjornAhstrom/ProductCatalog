@@ -11,18 +11,33 @@
         <Grid RowDefinitions="auto, auto, *">
             <Grid Grid.Row="0" ColumnDefinitions="1*,1*">
                 <VerticalStackLayout Grid.Column="0" Spacing="10">
+                    
                     <Label Text="Produktnamn"/>
-                    <Entry Text="{Binding Name}"/>
-                    <Label Text="Produktbeskrivning"/>
-                    <Entry Text="{Binding Description}"/>
+                    <Entry Text="{Binding Name}" IsEnabled="{Binding SaveChangedProduct}"TextColor="White"/>
+                    
+                    <Label Text="Produktbeskrivning" IsVisible="{Binding IsLabelAndEntryVisible}"/>
+                    <Entry Text="{Binding Description}" IsVisible="{Binding IsLabelAndEntryVisible}"/>
+                    
                     <Label Text="Produktpris"/>
-                    <Entry Text="{Binding Price}"/>
-                    <Label Text="Kategori" IsVisible="{Binding IsVisible}"/>
-                    <Entry Text="{Binding SelectedCategoryText}" IsEnabled="False" IsVisible="{Binding IsVisible}" TextColor="White"/>
+                    <Entry Text="{Binding Price}" IsEnabled="{Binding SaveChangedProduct}" TextColor="White"/>
+                    
+                    <Label Text="Kategori" IsVisible="{Binding IsCategoryVisible}"/>
+                    <Entry Text="{Binding SelectedCategoryText}" IsEnabled="False" IsVisible="{Binding IsCategoryVisible}" TextColor="White"/>
+                    
                 </VerticalStackLayout>
+
+                <Grid Grid.Column="1" Margin="20" IsVisible="{Binding IsDescriptionVisible}">
+                    <Grid RowDefinitions="auto, *">
+                        <Label Grid.Column="0" Text="Produktbeskrivning" Margin="10,0,0,0" FontSize="20"/>
+
+                        <Frame Grid.Column="1" BorderColor="Gray" BackgroundColor="Transparent" Margin="0,30">
+                            <Label Text="{Binding Description}"/>
+                        </Frame>
+                    </Grid>
+                </Grid>
             
 
-                <Grid Grid.Column="1" Margin="20" IsVisible="{Binding IsVisible}">
+                <Grid Grid.Column="1" Margin="20" IsVisible="{Binding IsCategoryVisible}">
                     <VerticalStackLayout>
                         <Frame BorderColor="Gray" Background="Transparent">
                             <Label Text="{Binding SelectedCategoryText}" FontSize="16"/>

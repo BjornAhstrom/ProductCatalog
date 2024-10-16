@@ -66,7 +66,6 @@ public partial class MainPageViewModel : ObservableObject
     [RelayCommand]
     public async Task CreateProduct()
     {
-        //await Shell.Current.GoToAsync(nameof(CreateProductPage));
         try
         {
             await Shell.Current.GoToAsync("CreateProductPage");
