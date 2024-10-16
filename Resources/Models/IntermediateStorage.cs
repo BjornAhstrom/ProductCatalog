@@ -2,5 +2,5 @@
 
 public static class IntermediateStorage
 {
-    public static Product CurrentProduct { get; set; } = new Product();
+    public static Product CurrentProduct { get; set; } = null!;
 }

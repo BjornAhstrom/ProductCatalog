@@ -19,23 +19,32 @@ public partial class MainPageViewModel : ObservableObject
 
     // Took help from ChatGpt to update the ListView
     public IRelayCommand LoadDataCommand { get; }
+
     public MainPageViewModel(IProductService productService)
     {
         _productService = productService;
+
         // Took help from ChatGpt to update the ListView
         LoadDataCommand = new RelayCommand(GetAllProducts);
     }
 
     private void GetAllProducts()
     {
-
-        Products.Clear();
-        var products = _productService.GetAllProducts();
-
-        foreach(var product in products)
+        try
         {
-            Products.Add(product);
+            IntermediateStorage.CurrentProduct = null!;
+            Products.Clear();
+            var products = _productService.GetAllProducts();
+
+            if (products != null)
+            {
+                foreach (var product in products)
+                {
+                    Products.Add(product);
+                }
+            }
         }
+        catch (Exception ex) { }
     }
 
     [RelayCommand]
@@ -43,9 +52,10 @@ public partial class MainPageViewModel : ObservableObject
     {
         try
         {
-            if (SelectedProduct != null)
+            IntermediateStorage.CurrentProduct = SelectedProduct;
+
+            if (IntermediateStorage.CurrentProduct != null)
             {
-                IntermediateStorage.CurrentProduct = SelectedProduct;
                 await Shell.Current.GoToAsync("CreateProductPage");
             }
         }
@@ -57,12 +67,20 @@ public partial class MainPageViewModel : ObservableObject
     public async Task CreateProduct()
     {
         //await Shell.Current.GoToAsync(nameof(CreateProductPage));
-        await Shell.Current.GoToAsync("CreateProductPage");
+        try
+        {
+            await Shell.Current.GoToAsync("CreateProductPage");
+        }
+        catch (Exception ex) { }
     }
 
     [RelayCommand]
     public async Task CreateCategory()
     {
-        await Shell.Current.GoToAsync("CreateCategoryPage");
+        try
+        {
+            await Shell.Current.GoToAsync("CreateCategoryPage");
+        }
+        catch (Exception ex) { }
     }
 }

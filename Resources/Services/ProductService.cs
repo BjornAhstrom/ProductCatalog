@@ -27,11 +27,7 @@ public class ProductService : IProductService
                 return catalog ?? new Catalog();
             }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading catalog from file: {ex.Message}");
-
-        }
+        catch (Exception ex) {}
 
         return new Catalog();
     }

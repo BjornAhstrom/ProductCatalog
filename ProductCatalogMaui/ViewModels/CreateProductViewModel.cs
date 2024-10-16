@@ -14,7 +14,7 @@ public partial class CreateProductViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<Category> _categories = [];
     [ObservableProperty]
-    private Category _selectedCategory;
+    private Category _selectedCategory = null!;
 
     [ObservableProperty]
     private string _name;
@@ -22,15 +22,25 @@ public partial class CreateProductViewModel : ObservableObject
     private string _description;
     [ObservableProperty]
     private decimal _price;
+    [ObservableProperty]
+    private string _categoryName;
+    [ObservableProperty]
+    private string _saveOrUpdateBtnText;
+    [ObservableProperty]
+    private string _cancelOrBackBtnText;
+    [ObservableProperty]
+    private bool _isVisible = true;
 
+    private Product _currentProduct = null!;
 
 
     public CreateProductViewModel(IProductService productService)
     {
         _productService = productService;
         GetAllCategories();
-
-        Debug.WriteLine($"Product id: {IntermediateStorage.CurrentProduct.Id}");
+        SaveOrUpdateBtnText = "Spara";
+        CancelOrBackBtnText = "Avbryt";
+        EditProduct();
     }
 
     private void GetAllCategories()
@@ -50,28 +60,73 @@ public partial class CreateProductViewModel : ObservableObject
         OnPropertyChanged(nameof(SelectedCategoryText));
     }
 
+    public void EditProduct()
+    {
+        try
+        {
+            if (IntermediateStorage.CurrentProduct != null)
+            {
+                IsVisible = false;
+                SaveOrUpdateBtnText = "Uppdatera";
+                CancelOrBackBtnText = "Tillbaka";
+                var id = IntermediateStorage.CurrentProduct.Id;
+
+                if (!string.IsNullOrEmpty(id))
+                {
+                    _currentProduct = _productService.GetProduct(id);
+
+                    Name = _currentProduct.ProductName;
+                    Description = _currentProduct.ProductDescription;
+                    Price = _currentProduct.ProductPrice;
+
+                }
+            }
+        }
+        catch (Exception ex) { }
+    }
+
     [RelayCommand]
     public async Task SaveProduct()
     {
-        var product = new Product()
+        try
         {
-            ProductName = Name,
-            ProductDescription = Description,
-            ProductPrice = Price,
-            ProductCategory = SelectedCategory,
-        };
+            if (IsVisible)
+            {
+                var product = new Product()
+                {
+                    ProductName = Name,
+                    ProductDescription = Description,
+                    ProductPrice = Price,
+                    ProductCategory = SelectedCategory,
+                };
 
-       if (!string.IsNullOrWhiteSpace(product.ProductName) && !string.IsNullOrWhiteSpace(product.ProductDescription) && !decimal.IsNegative(product.ProductPrice) && SelectedCategory != null)
-        {
-            _productService.SaveProduct(product);
-            await Shell.Current.GoToAsync("..");
+                if (!string.IsNullOrWhiteSpace(product.ProductName) && !string.IsNullOrWhiteSpace(product.ProductDescription) && !decimal.IsNegative(product.ProductPrice) && SelectedCategory != null)
+                {
+                    _productService.SaveProduct(product);
+                    await Shell.Current.GoToAsync("..");
+                }
+            }
+            else
+            {
+                _currentProduct.ProductName = Name;
+                _currentProduct.ProductDescription = Description;
+                _currentProduct.ProductPrice = Price;
+
+                _productService.UpdateProduct(_currentProduct);
+                await Shell.Current.GoToAsync("..");
+            }
         }
+        catch { }
     }
 
     [RelayCommand]
     public void Cancel()
     {
-        Shell.Current.GoToAsync("..");
+        try
+        {
+            Shell.Current.GoToAsync("..");
+        }
+        catch { }
     }
 
 }

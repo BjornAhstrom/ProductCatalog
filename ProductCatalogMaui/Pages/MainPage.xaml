@@ -10,8 +10,8 @@
     <ScrollView >
         <Grid RowDefinitions="auto ,auto, *" Margin="15">
             <Grid Grid.Row="0" ColumnDefinitions="*, *">
-                <Button Grid.Column="0" Text="Create Product" HorizontalOptions="Start" Command="{Binding CreateProductCommand}"/>
-                <Button Grid.Column="1" Text="Create Category" HorizontalOptions="End" Command="{Binding CreateCategoryCommand}"/>
+                <Button Grid.Column="0" Text="Skapa en produkt" HorizontalOptions="Start" Command="{Binding CreateProductCommand}"/>
+                <Button Grid.Column="1" Text="Skapa en kategori" HorizontalOptions="End" Command="{Binding CreateCategoryCommand}"/>
             </Grid>
             <Grid Grid.Row="1" ColumnDefinitions="1.5*, 1*, 1*, 1*" Margin="0,30,0,0">
                 <Label Grid.Column="0" Text="Id"/>
