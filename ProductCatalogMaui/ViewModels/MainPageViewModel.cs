@@ -42,12 +42,13 @@ public partial class MainPageViewModel : ObservableObject
     [RelayCommand]
     public async Task CreateProduct()
     {
-       await Shell.Current.GoToAsync(nameof(CreateProductPage));
+        //await Shell.Current.GoToAsync(nameof(CreateProductPage));
+        await Shell.Current.GoToAsync("CreateProductPage");
     }
 
     [RelayCommand]
     public async Task CreateCategory()
     {
-        await Shell.Current.GoToAsync(nameof(CreateCategoryPage));
+        await Shell.Current.GoToAsync("CreateCategoryPage");
     }
 }
