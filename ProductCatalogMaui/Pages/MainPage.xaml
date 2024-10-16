@@ -13,7 +13,7 @@
                 <Button Grid.Column="0" Text="Create Product" HorizontalOptions="Start" Command="{Binding CreateProductCommand}"/>
                 <Button Grid.Column="1" Text="Create Category" HorizontalOptions="End" Command="{Binding CreateCategoryCommand}"/>
             </Grid>
-            <Grid Grid.Row="1" ColumnDefinitions="2*, 1*, 1*, 1*" Margin="0,30,0,0">
+            <Grid Grid.Row="1" ColumnDefinitions="1.5*, 1*, 1*, 1*" Margin="0,30,0,0">
                 <Label Grid.Column="0" Text="Id"/>
                 <Label Grid.Column="1" Text="Produkt"/>
                 <Label Grid.Column="2" Text="Pris"/>
