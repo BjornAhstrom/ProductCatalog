@@ -1,6 +1,6 @@
 ﻿namespace Resources.Models;
 
-public class IntermediateStorage
+public static class IntermediateStorage
 {
-    public Product CurrentProduct { get; set; } = new Product();
+    public static Product CurrentProduct { get; set; } = new Product();
 }

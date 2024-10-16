@@ -21,7 +21,7 @@
             </Grid>
             <BoxView Grid.Row="1" HeightRequest="1" VerticalOptions="End"/>
 
-            <CollectionView Grid.Row="2" ItemsSource="{Binding Products}" Margin="0,15,0,0">
+            <CollectionView Grid.Row="2" ItemsSource="{Binding Products}" SelectionMode="Single" SelectedItem="{Binding SelectedProduct}" SelectionChangedCommand="{Binding EditProductCommand}" Margin="0,15,0,0">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="{x:Type models:Product}">
                         <Grid ColumnDefinitions="1.5*, 1*, 1*, 1*">

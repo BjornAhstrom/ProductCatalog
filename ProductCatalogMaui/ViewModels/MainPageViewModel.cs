@@ -1,11 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ProductCatalogMaui.Pages;
 using Resources.Models;
 using Resources.Services;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Windows.Input;
 
 namespace ProductCatalogMaui.ViewModels;
 
@@ -16,6 +13,9 @@ public partial class MainPageViewModel : ObservableObject
 
     [ObservableProperty]
     private ObservableCollection<Product> _products = [];
+
+    [ObservableProperty]
+    private Product _selectedProduct = new();
 
     // Took help from ChatGpt to update the ListView
     public IRelayCommand LoadDataCommand { get; }
@@ -36,6 +36,20 @@ public partial class MainPageViewModel : ObservableObject
         {
             Products.Add(product);
         }
+    }
+
+    [RelayCommand]
+    public async Task EditProduct()
+    {
+        try
+        {
+            if (SelectedProduct != null)
+            {
+                IntermediateStorage.CurrentProduct = SelectedProduct;
+                await Shell.Current.GoToAsync("CreateProductPage");
+            }
+        }
+        catch (Exception ex) { }
     }
 
 

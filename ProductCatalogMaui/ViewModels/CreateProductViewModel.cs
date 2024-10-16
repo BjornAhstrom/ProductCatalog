@@ -29,6 +29,8 @@ public partial class CreateProductViewModel : ObservableObject
     {
         _productService = productService;
         GetAllCategories();
+
+        Debug.WriteLine($"Product id: {IntermediateStorage.CurrentProduct.Id}");
     }
 
     private void GetAllCategories()
