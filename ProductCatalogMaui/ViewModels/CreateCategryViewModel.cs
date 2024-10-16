@@ -24,6 +24,7 @@ public partial class CreateCategryViewModel : ObservableObject
 
     private void GetAllCategories()
     {
+        Categories.Clear();
         var categories = _productService.GetAllCategories();
 
         if (categories != null)
@@ -47,7 +48,7 @@ public partial class CreateCategryViewModel : ObservableObject
             _productService.SaveCategory(category);
             
         }
-        
+        GetAllCategories();
     }
 
     [RelayCommand]
