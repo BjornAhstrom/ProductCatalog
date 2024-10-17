@@ -13,7 +13,7 @@
                 <VerticalStackLayout Grid.Column="0" Spacing="10">
                     
                     <Label Text="Produktnamn"/>
-                    <Entry Text="{Binding Name}" IsEnabled="{Binding SaveChangedProduct}"TextColor="White"/>
+                    <Entry Text="{Binding Name}" IsEnabled="{Binding SaveChangedProduct}" TextColor="White"/>
                     
                     <Label Text="Produktbeskrivning" IsVisible="{Binding IsLabelAndEntryVisible}"/>
                     <Entry Text="{Binding Description}" IsVisible="{Binding IsLabelAndEntryVisible}"/>
