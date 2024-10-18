@@ -19,30 +19,28 @@
 
             <BoxView Grid.Row="0" HeightRequest="1" VerticalOptions="End"/>
 
-            <Grid Grid.Row="1" ColumnDefinitions="0.5*,1.2*,0.5*" Margin="0,20,0,0">
-                <VerticalStackLayout Grid.Column="1">
-                    <Grid ColumnDefinitions="1.3*,1*">
-                        <Label Grid.Column="0" Text="Id" FontSize="16" Margin="20,0,0,0"/>
-                        <Label Grid.Column="1" Text="Kategori" FontSize="16"/>
-                    </Grid>
+            <Grid Grid.Row="1" RowDefinitions="auto, *" ColumnDefinitions="0.5*,1*,0.5*" Margin="0,20,0,0">
 
-                    <BoxView HeightRequest="1" VerticalOptions="FillAndExpand"/>
+                <Grid Grid.Row="0" Grid.Column="1" RowDefinitions="auto, *" ColumnDefinitions="1.3*,1*" VerticalOptions="Start">
+                    <Label Grid.Row="0" Grid.Column="0" Text="Id"/>
+                    <Label Grid.Row="0" Grid.Column="1" Text="Kategori"/>
+                </Grid>
 
-                    <Frame BorderColor="Gray" BackgroundColor="Transparent" Margin="0,20,0,0">
-                        <ListView ItemsSource="{Binding Categories}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="{x:Type models:Category}">
-                                    <ViewCell>
-                                        <Grid ColumnDefinitions="1.5*,1*">
-                                            <Label Grid.Column="0" Text="{Binding Id}" FontSize="16"/>
-                                            <Label Grid.Column="1" Text="{Binding CategoryName}" FontSize="16"/>
-                                        </Grid>
-                                    </ViewCell>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </Frame>
-                </VerticalStackLayout>
+                <BoxView Grid.Row="1" Grid.Column="1" HeightRequest="1" VerticalOptions="Start"  BackgroundColor="White"/>
+
+                <ListView Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Categories}" Margin="0,15,0,0" >
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="{x:Type models:Category}">
+                            <ViewCell>
+                                <Grid ColumnDefinitions="1.3*,1*">
+                                    <Label Grid.Column="0" Text="{Binding Id}" FontSize="16"/>
+                                    <Label Grid.Column="1" Text="{Binding CategoryName}" FontSize="16"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
             </Grid>
 
             <Grid Grid.Row="2" ColumnDefinitions="0.5*,1*,0.5*" VerticalOptions="End" Margin="0,10,0,20">

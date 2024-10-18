@@ -13,16 +13,16 @@
                 <VerticalStackLayout Grid.Column="0" Spacing="10">
                     
                     <Label Text="Produktnamn"/>
-                    <Entry Text="{Binding Name}" IsEnabled="{Binding SaveChangedProduct}" TextColor="White"/>
+                    <Entry Text="{Binding Name}" IsEnabled="{Binding SaveNewCreatedProduct}" TextColor="White"/>
                     
                     <Label Text="Produktbeskrivning" IsVisible="{Binding IsLabelAndEntryVisible}"/>
                     <Entry Text="{Binding Description}" IsVisible="{Binding IsLabelAndEntryVisible}"/>
                     
                     <Label Text="Produktpris"/>
-                    <Entry Text="{Binding Price}" IsEnabled="{Binding SaveChangedProduct}" TextColor="White"/>
+                    <Entry Text="{Binding Price}" IsEnabled="{Binding SaveNewCreatedProduct}" TextColor="White"/>
                     
                     <Label Text="Kategori" IsVisible="{Binding IsCategoryVisible}"/>
-                    <Entry Text="{Binding SelectedCategoryText}" IsEnabled="False" IsVisible="{Binding IsCategoryVisible}" TextColor="White"/>
+                    <Entry Text="{Binding SelectedCategory.CategoryName}" IsEnabled="False" IsVisible="{Binding IsCategoryVisible}" TextColor="White"/>
                     
                 </VerticalStackLayout>
 
@@ -33,6 +33,8 @@
                         <Frame Grid.Column="1" BorderColor="Gray" BackgroundColor="Transparent" Margin="0,30">
                             <Label Text="{Binding Description}"/>
                         </Frame>
+
+                        <Button Grid.Row="1" Text="Ta bort produkt" Command="{Binding DeleteProductCommand}" VerticalOptions="End" IsVisible="{Binding IsDescriptionVisible}"/>
                     </Grid>
                 </Grid>
             

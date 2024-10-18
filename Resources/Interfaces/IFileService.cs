@@ -1,6 +1,6 @@
 ﻿using Resources.Enums;
 
-namespace Resources.Services
+namespace Resources.Interfaces
 {
     public interface IFileService
     {

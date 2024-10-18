@@ -1,5 +1,5 @@
-﻿using Resources.Models;
-using Resources.Services;
+﻿using Resources.Interfaces;
+using Resources.Models;
 
 namespace ProductCatalogConsole.Interactions;
 
@@ -266,8 +266,9 @@ public class ProductInteraction
 
     public void CheckIfCategoriesExistsBeforeCreatingProduct()
     {
+        _productService.GetAllCategories();
 
-        if (_categories.Count == 0)
+        if (_categories.Count() == 0)
         {
             Console.Clear();
             Console.WriteLine("\n\tDet finns inga kategorier!\n\tDu måste lägga till en kategori innan du kan skapa en produkt.");

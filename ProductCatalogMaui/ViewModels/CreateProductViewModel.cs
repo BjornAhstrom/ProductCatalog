@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Resources.Interfaces;
 using Resources.Models;
-using Resources.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
@@ -29,6 +29,8 @@ public partial class CreateProductViewModel : ObservableObject
     [ObservableProperty]
     private string _cancelOrBackBtnText;
     [ObservableProperty]
+    private string _ErrorMessage = "";
+    [ObservableProperty]
     private bool _isLabelAndEntryVisible = true;
     [ObservableProperty]
     private bool _isCategoryVisible = true;
@@ -39,7 +41,7 @@ public partial class CreateProductViewModel : ObservableObject
     [ObservableProperty]
     private bool _saveChangedProduct = false;
     [ObservableProperty]
-    private bool _changeProduct = true;
+    private bool _saveNewCreatedProduct = true;
 
     private Product _currentProduct = null!;
 
@@ -64,7 +66,6 @@ public partial class CreateProductViewModel : ObservableObject
     }
 
     public string SelectedCategoryText => SelectedCategory == null ? "Välj en kategori" : SelectedCategory.CategoryName;
-
     partial void OnSelectedCategoryChanged(Category value)
     {
         OnPropertyChanged(nameof(SelectedCategoryText));
@@ -80,7 +81,7 @@ public partial class CreateProductViewModel : ObservableObject
                 IsLabelAndEntryVisible = false;
                 IsDescriptionVisible = true;
                 IsCategoryVisible = false;
-                ChangeProduct = false;
+                SaveNewCreatedProduct = false;
 
                 SaveOrUpdateBtnText = "Ändra produkten";
                 CancelOrBackBtnText = "Tillbaka";
@@ -99,17 +100,18 @@ public partial class CreateProductViewModel : ObservableObject
                 }
             }
         }
-        catch (Exception ex) { }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
     }
 
     public void EditProduct()
     {
-        Debug.WriteLine("INSIDE Edit product");
-
         IsLabelAndEntryVisible = true;
         IsDescriptionVisible = false;
         IsCategoryVisible = false;
-        ChangeProduct = true;
+        SaveNewCreatedProduct = true;
         SaveChangedProduct = true;
 
         SaveOrUpdateBtnText = "Spara";
@@ -124,11 +126,46 @@ public partial class CreateProductViewModel : ObservableObject
             _currentProduct.ProductDescription = Description;
             _currentProduct.ProductPrice = Price;
 
-            _productService.UpdateProduct(_currentProduct);
+            var response = _productService.UpdateProduct(_currentProduct);
+            if (response == Resources.Enums.StatusCodes.Success)
+            {
+                _ = GoBack();
+            }
+            else
+            {
+                ErrorMessage = "Something went wrong.";
+            }
 
-            _ = GoBack();
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
+    }
+    [RelayCommand]
+    public void DeleteProduct()
+    {
+        try
+        {
+            if (IntermediateStorage.CurrentProduct != null)
+            {
+                var response = _productService.DeleteProduct(IntermediateStorage.CurrentProduct.Id);
+                if (response == Resources.Enums.StatusCodes.Success)
+                {
+                    _ = GoBack();
+                }
+                else
+                {
+                    ErrorMessage = "Something went wrong.";
+                }
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
     }
 
     private void SaveNewProduct()
@@ -145,17 +182,31 @@ public partial class CreateProductViewModel : ObservableObject
 
             if (!string.IsNullOrWhiteSpace(product.ProductName) && !string.IsNullOrWhiteSpace(product.ProductDescription) && !decimal.IsNegative(product.ProductPrice) && SelectedCategory != null)
             {
-                _productService.SaveProduct(product);
-                _ = GoBack();
+                var response = _productService.SaveProduct(product);
+                switch (response)
+                {
+                    case Resources.Enums.StatusCodes.Success:
+                        _ = GoBack();
+                        break;
+                    case Resources.Enums.StatusCodes.Exists:
+                        ErrorMessage = "Product alredy exists.";
+                        break;
+                    case Resources.Enums.StatusCodes.Failed:
+                        ErrorMessage = "Something went wrong.";
+                        break;
+                }
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
     }
 
     [RelayCommand]
     public void SaveProduct()
     {
-        if (ChangeProduct && !SaveChangedProduct)
+        if (SaveNewCreatedProduct && !SaveChangedProduct)
         {
             SaveNewProduct();
         }
@@ -174,7 +225,7 @@ public partial class CreateProductViewModel : ObservableObject
     public void Cancel()
     {
         // If no changes go back
-        if (!ChangeProduct)
+        if (!SaveNewCreatedProduct)
         {
             _ = GoBack();
         }

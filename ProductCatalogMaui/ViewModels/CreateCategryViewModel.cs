@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Resources.Interfaces;
 using Resources.Models;
-using Resources.Services;
 using System.Collections.ObjectModel;
 
 namespace ProductCatalogMaui.ViewModels;

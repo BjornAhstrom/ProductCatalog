@@ -1,7 +1,7 @@
 ﻿using Resources.Enums;
 using Resources.Models;
 
-namespace Resources.Services
+namespace Resources.Interfaces
 {
     public interface IProductService
     {

@@ -1,5 +1,5 @@
-﻿using Resources.Models;
-using Resources.Services;
+﻿using Resources.Interfaces;
+using Resources.Models;
 
 namespace ProductCatalogConsole.Interactions;
 

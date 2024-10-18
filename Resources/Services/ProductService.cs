@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Resources.Enums;
+using Resources.Interfaces;
 using Resources.Models;
 
 namespace Resources.Services;
@@ -27,7 +28,7 @@ public class ProductService : IProductService
                 return catalog ?? new Catalog();
             }
         }
-        catch (Exception ex) {}
+        catch (Exception ex) { }
 
         return new Catalog();
     }
@@ -40,22 +41,22 @@ public class ProductService : IProductService
 
     public StatusCodes SaveProduct(Product product)
     {
-        if (_catalog.Products.Any(p => p.ProductName == product.ProductName))
+        try
         {
-            return StatusCodes.Exists;
-        }
-        else
-        {
-            try
+            if (_catalog.Products.Any(p => p.ProductName == product.ProductName))
+            {
+                return StatusCodes.Exists;
+            }
+            else
             {
                 _catalog.Products.Add(product);
                 SaveCatalogToFile();
                 return StatusCodes.Success;
             }
-            catch (Exception ex)
-            {
-                return StatusCodes.Failed;
-            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCodes.Failed;
         }
     }
 

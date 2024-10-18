@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ProductCatalogConsole.Interactions;
 using ProductCatalogConsole.Menus;
+using Resources.Interfaces;
 using Resources.Services;
 
 class Program

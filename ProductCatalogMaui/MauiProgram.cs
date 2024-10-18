@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using ProductCatalogMaui.Pages;
 using ProductCatalogMaui.ViewModels;
+using Resources.Interfaces;
 using Resources.Services;
 
 namespace ProductCatalogMaui
