@@ -1,17 +1,66 @@
 ﻿using Moq;
 using Resources.Interfaces;
 using Resources.Models;
+using Resources.Services;
 
 namespace Resources_Tests;
 
 public class ProductService_Tests
 {
 
-    private readonly Mock<IProductService> _productService;
+    private readonly Mock<IProductService> _mockProductService;
+    private readonly IFileService _fileService;
 
     public ProductService_Tests()
     {
-        _productService = new Mock<IProductService>();
+        _mockProductService = new Mock<IProductService>();
+    }
+
+
+    // Took help from ChatGpt
+    // File service tests
+
+    [Fact]
+    public void SaveToFile_ShouldReturnSuccess_WhenContentIsSaved()
+    {
+        // arrange
+        string filePath = Path.GetTempFileName();
+        string content = "Det här ska finnas i filen!";
+        var fileService = new FileService(filePath);
+
+        // act
+        var saveToFileResponse = fileService.SaveToFile(content);
+
+        // assert
+        Assert.Equal(Resources.Enums.StatusCodes.Success, saveToFileResponse);
+
+        // Remove temporary file
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void GetFromFile_ShouldReturnSuccess_WhenFetchingFromFile()
+    {
+        // arrange
+        string filePath = Path.GetTempFileName();
+        string content = "Det här ska finnas i filen!";
+        File.WriteAllText(filePath, content);
+        var fileService = new FileService(filePath);
+
+        // act
+        var getFromFileResponse = fileService.GetFromFile();
+
+        // assert
+        Assert.Equal(content, getFromFileResponse);
+
+        // Remove temporary file
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
     }
 
 
@@ -27,11 +76,10 @@ public class ProductService_Tests
         Category category = new Category { Id = id, CategoryName = "Elektronik" };
         Product product = new() { Id = id, ProductName = "Iphone 18", ProductDescription = "Senaste mobilen", ProductPrice = 11999m, ProductCategory = category };
 
-        _productService.Setup(service => service.SaveProduct(It.IsAny<Product>())).Returns(Resources.Enums.StatusCodes.Success);
+        _mockProductService.Setup(service => service.SaveProduct(It.IsAny<Product>())).Returns(Resources.Enums.StatusCodes.Success);
 
         // act
-        var productResponse = _productService.Object.SaveProduct(product);
-
+        var productResponse = _mockProductService.Object.SaveProduct(product);
 
         // assert
         Assert.Equal(Resources.Enums.StatusCodes.Success, productResponse);
@@ -45,10 +93,10 @@ public class ProductService_Tests
         Category category = new Category { Id = id, CategoryName = "Elektronik" };
         Product product = new() { Id = id, ProductName = "Iphone 18", ProductDescription = "Senaste mobilen", ProductPrice = 11999m, ProductCategory = category };
 
-        _productService.Setup(service => service.SaveProduct(It.Is<Product>(p => p.ProductName == product.ProductName))).Returns(Resources.Enums.StatusCodes.Exists);
+        _mockProductService.Setup(service => service.SaveProduct(It.Is<Product>(p => p.ProductName == product.ProductName))).Returns(Resources.Enums.StatusCodes.Exists);
 
         // act
-        var productResponse = _productService.Object.SaveProduct(product);
+        var productResponse = _mockProductService.Object.SaveProduct(product);
 
 
         // assert
@@ -67,10 +115,10 @@ public class ProductService_Tests
 
         var productList = new List<Product> { product };
 
-        _productService.Setup(service => service.GetAllProducts()).Returns(productList);
+        _mockProductService.Setup(service => service.GetAllProducts()).Returns(productList);
 
         // act
-        var getAllproductsList = _productService.Object.GetAllProducts();
+        var getAllproductsList = _mockProductService.Object.GetAllProducts();
 
 
         // assert
@@ -87,11 +135,11 @@ public class ProductService_Tests
         Category category = new Category { Id = id, CategoryName = "Elektronik" };
         Product product = new() { Id = id, ProductName = "Iphone 18", ProductDescription = "Senaste mobilen", ProductPrice = 11999m, ProductCategory = category };
 
-        _productService.Setup(service => service.UpdateProduct(It.Is<Product>(p => p.Id == id))).Returns(Resources.Enums.StatusCodes.Success);
+        _mockProductService.Setup(service => service.UpdateProduct(It.Is<Product>(p => p.Id == id))).Returns(Resources.Enums.StatusCodes.Success);
 
         // act
         product.ProductName = "New name";
-        var updateResponse = _productService.Object.UpdateProduct(product);
+        var updateResponse = _mockProductService.Object.UpdateProduct(product);
 
         // assert
         Assert.Equal(Resources.Enums.StatusCodes.Success, updateResponse);
@@ -107,10 +155,10 @@ public class ProductService_Tests
         Category category = new Category { Id = id, CategoryName = "Elektronik" };
         Product product = new() { Id = id, ProductName = "Iphone 18", ProductDescription = "Senaste mobilen", ProductPrice = 11999m, ProductCategory = category };
 
-        _productService.Setup(service => service.DeleteProduct(id)).Returns(Resources.Enums.StatusCodes.Success);
+        _mockProductService.Setup(service => service.DeleteProduct(id)).Returns(Resources.Enums.StatusCodes.Success);
 
         // act
-        var deleteResponse = _productService.Object.DeleteProduct(id);
+        var deleteResponse = _mockProductService.Object.DeleteProduct(id);
 
         // assert
         Assert.Equal(Resources.Enums.StatusCodes.Success, deleteResponse);
@@ -129,10 +177,10 @@ public class ProductService_Tests
         string id = Guid.NewGuid().ToString();
         Category category = new Category { Id = id, CategoryName = "Elektronik" };
 
-        _productService.Setup(service => service.SaveCategory(It.IsAny<Category>())).Returns(Resources.Enums.StatusCodes.Success);
+        _mockProductService.Setup(service => service.SaveCategory(It.IsAny<Category>())).Returns(Resources.Enums.StatusCodes.Success);
 
         // act
-        var productResponse = _productService.Object.SaveCategory(category);
+        var productResponse = _mockProductService.Object.SaveCategory(category);
 
 
         // assert
@@ -146,10 +194,10 @@ public class ProductService_Tests
         string id = Guid.NewGuid().ToString();
         Category category = new Category { Id = id, CategoryName = "Elektronik" };
 
-        _productService.Setup(service => service.SaveCategory(It.Is<Category>(c => c.CategoryName == category.CategoryName))).Returns(Resources.Enums.StatusCodes.Exists);
+        _mockProductService.Setup(service => service.SaveCategory(It.Is<Category>(c => c.CategoryName == category.CategoryName))).Returns(Resources.Enums.StatusCodes.Exists);
 
         // act
-        var categorytResponse = _productService.Object.SaveCategory(category);
+        var categorytResponse = _mockProductService.Object.SaveCategory(category);
 
 
         // assert
@@ -167,10 +215,10 @@ public class ProductService_Tests
 
         var categoriesList = new List<Category> { category };
 
-        _productService.Setup(service => service.GetAllCategories()).Returns(categoriesList);
+        _mockProductService.Setup(service => service.GetAllCategories()).Returns(categoriesList);
 
         // act
-        var getAllCategoriesList = _productService.Object.GetAllCategories();
+        var getAllCategoriesList = _mockProductService.Object.GetAllCategories();
 
 
         // assert
