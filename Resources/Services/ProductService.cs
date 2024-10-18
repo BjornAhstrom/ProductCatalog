@@ -43,7 +43,8 @@ public class ProductService : IProductService
     {
         try
         {
-            if (_catalog.Products.Any(p => p.ProductName == product.ProductName))
+            GetAllProducts();
+            if (_catalog.Products.Any(p => p.ProductName.ToLower().Trim() == product.ProductName.ToLower().Trim()))
             {
                 return StatusCodes.Exists;
             }
@@ -62,46 +63,47 @@ public class ProductService : IProductService
 
     public StatusCodes SaveCategory(Category category)
     {
-        if (_catalog.Categories.Any(c => c.CategoryName == category.CategoryName))
+        try
         {
-            return StatusCodes.Exists;
-        }
-        else
-        {
-            try
+            GetAllCategories();
+            if (_catalog.Categories.Any(c => c.CategoryName.ToLower().Trim() == category.CategoryName.ToLower().Trim()))
+            {
+                return StatusCodes.Exists;
+            }
+            else
             {
                 _catalog.Categories.Add(category);
                 SaveCatalogToFile();
                 return StatusCodes.Success;
             }
-            catch (Exception ex)
-            {
-                return StatusCodes.Failed;
-            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCodes.Failed;
         }
     }
 
     public StatusCodes UpdateProduct(Product product)
     {
-        var existingProduct = _catalog.Products.FirstOrDefault(p => p.Id == product.Id);
+        try
+        {
+            var existingProduct = _catalog.Products.FirstOrDefault(p => p.Id == product.Id);
 
-        if (existingProduct == null)
-        {
-            return StatusCodes.NotFound;
-        }
-        else
-        {
-            try
+            if (existingProduct == null)
+            {
+                return StatusCodes.NotFound;
+            }
+            else
             {
                 var index = _catalog.Products.IndexOf(existingProduct);
                 _catalog.Products[index] = product;
                 SaveCatalogToFile();
                 return StatusCodes.Success;
             }
-            catch (Exception ex)
-            {
-                return StatusCodes.Failed;
-            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCodes.Failed;
         }
     }
 

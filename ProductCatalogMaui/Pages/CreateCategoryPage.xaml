@@ -12,8 +12,9 @@
         <Grid RowDefinitions="auto, *, auto" Margin="0,30">
             <Grid Grid.Row="0" ColumnDefinitions="0.5*,1*,0.5*">
                 <VerticalStackLayout Grid.Column="1">
-                    <Label Text="Kategorinamn"/>
-                    <Entry Text="{Binding Name}" Margin="0,10"/>
+                    <Label Text="{Binding CategoryNameLabel}"/>
+                    <BoxView HeightRequest="1" IsVisible="{Binding CategoryExists}" BackgroundColor="Red" />
+                    <Entry Text="{Binding CategoryNameEntry}" Margin="0,10" ClearButtonVisibility="WhileEditing"/>
                 </VerticalStackLayout>
             </Grid>
 

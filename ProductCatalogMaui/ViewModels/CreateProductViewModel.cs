@@ -31,11 +31,15 @@ public partial class CreateProductViewModel : ObservableObject
     [ObservableProperty]
     private string _ErrorMessage = "";
     [ObservableProperty]
+    private string _productNameLabel = "";
+    [ObservableProperty]
     private bool _isLabelAndEntryVisible = true;
     [ObservableProperty]
     private bool _isCategoryVisible = true;
     [ObservableProperty]
     private bool _isDescriptionVisible = false;
+    [ObservableProperty]
+    private bool _productExists = false;
 
 
     [ObservableProperty]
@@ -50,9 +54,15 @@ public partial class CreateProductViewModel : ObservableObject
     {
         _productService = productService;
         GetAllCategories();
+        Variables();
+        DisplayProduct();
+    }
+
+    private void Variables()
+    {
+        ProductNameLabel = "Produktnamn";
         SaveOrUpdateBtnText = "Spara";
         CancelOrBackBtnText = "Avbryt";
-        DisplayProduct();
     }
 
     private void GetAllCategories()
@@ -190,6 +200,12 @@ public partial class CreateProductViewModel : ObservableObject
                         break;
                     case Resources.Enums.StatusCodes.Exists:
                         ErrorMessage = "Product alredy exists.";
+                        ProductExists = true;
+
+                        if (ProductExists)
+                        {
+                            ProductNameLabel = ErrorMessage;
+                        }
                         break;
                     case Resources.Enums.StatusCodes.Failed:
                         ErrorMessage = "Something went wrong.";

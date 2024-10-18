@@ -14,12 +14,35 @@ public partial class CreateCategryViewModel : ObservableObject
     private ObservableCollection<Category> _categories = [];
 
     [ObservableProperty]
-    private string _name;
+    private string _categoryNameEntry;
+    [ObservableProperty]
+    private string _errorMessage = "";
+    [ObservableProperty]
+    private string _categoryNameLabel;
+    [ObservableProperty]
+    private bool _categoryExists = false;
 
     public CreateCategryViewModel(IProductService productService)
     {
         _productService = productService;
+        Variables();
         GetAllCategories();
+        ClearTextCommand = new RelayCommand(ClearText);
+    }
+
+    // Took help from ChatGpt to clear entry text
+    public IRelayCommand ClearTextCommand { get; set; }
+
+    private void ClearText()
+    {
+        CategoryNameEntry = string.Empty;
+    }
+
+    private void Variables()
+    {
+        CategoryNameLabel = "Kategorinamn";
+        CategoryExists = false;
+        ClearText();
     }
 
     private void GetAllCategories()
@@ -29,7 +52,7 @@ public partial class CreateCategryViewModel : ObservableObject
 
         if (categories != null)
         {
-            foreach(var category in categories)
+            foreach (var category in categories)
             {
                 Categories.Add(category);
             }
@@ -41,12 +64,31 @@ public partial class CreateCategryViewModel : ObservableObject
     {
         Category category = new();
 
-        if (!string.IsNullOrWhiteSpace(Name))
+        if (!string.IsNullOrWhiteSpace(CategoryNameEntry))
         {
-            category.CategoryName = Name;
+            category.CategoryName = CategoryNameEntry;
 
-            _productService.SaveCategory(category);
-            
+            var response = _productService.SaveCategory(category);
+
+            switch (response)
+            {
+                case Resources.Enums.StatusCodes.Success:
+                    Variables();
+                    break;
+                case Resources.Enums.StatusCodes.Exists:
+                    ErrorMessage = "Product alredy exists.";
+
+                    CategoryExists = true;
+                    if (CategoryExists)
+                    {
+                        CategoryNameLabel = ErrorMessage;
+                    }
+                    break;
+                case Resources.Enums.StatusCodes.Failed:
+                    ErrorMessage = "Something went wrong.";
+                    break;
+            }
+
         }
         GetAllCategories();
     }
@@ -54,6 +96,11 @@ public partial class CreateCategryViewModel : ObservableObject
     [RelayCommand]
     public void Cancel()
     {
-        Shell.Current.GoToAsync("..");
+        _ = GoBack();
+    }
+
+    private async Task GoBack()
+    {
+        await Shell.Current.GoToAsync("..");
     }
 }
